@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-	bigint a(atoi(argv[1]), 1), b(atoi(argv[2]), 1);
+    bigint a(atoi(argv[1]), 1), b(atoi(argv[2]), 1); // Construct valid operands for div
     short ones[4] = {3,7,9,1};
     std::random_device rd;
     if (b.get_data().size() == 1)
