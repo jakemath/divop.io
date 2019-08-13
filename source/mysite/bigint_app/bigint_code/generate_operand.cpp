@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-    bigint a(atoi(argv[1]),1);
+    bigint a(atoi(argv[1]),1); // Construct rule for valid random number
     short ones[4] = {7, 9, 3, 1};
     std::random_device rd;
     if (a.get_data().front() % 2 == 0 || a.get_data().front() == 5)
