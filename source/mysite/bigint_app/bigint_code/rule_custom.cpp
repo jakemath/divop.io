@@ -2,11 +2,11 @@
 
 int main(int argc, char *argv[])
 {
-    std::ifstream in(argv[1]);
+    std::ifstream in(argv[1]); // Read first operand in file
     string str;
     getline(in,str,',');
     in.close();
-    bigint a(str), rule;
+    bigint a(str), rule; // Compute rule for operand
     if (a.get_data().front() == 1 || a.get_data().front() == 9)
     rule = a;
     else
