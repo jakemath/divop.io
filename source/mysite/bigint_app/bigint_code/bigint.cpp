@@ -10,14 +10,16 @@ using namespace std;
 
 bigint::bigint() {}   // Default constructor
 
+// String constructor
 bigint::bigint (string num)    // String constructor
 {
     for (unsigned long long i = 0; i < num.length(); ++i)
         data.push_back(num[num.length() - 1 - i] - '0');
 }
 
-bigint::bigint (unsigned long long size, bool random)    // Random number constructor
-{                                                        // OR 0 filled constructor
+// Random number/0-filled number constructor
+bigint::bigint (unsigned long long size, bool random)    
+{                                                       
     unsigned long long i = 1;
     if (random) // Random number specified
     {
@@ -43,10 +45,11 @@ bigint::bigint (unsigned long long size, bool random)    // Random number constr
         data = list<short>(size, 0);
 }
 
-void operator + (bigint& sum, bigint& b)  // Overloaded addition. Result stored in sum argument
+// Bigint addition
+void operator + (bigint& sum, bigint& b)  
 {
-    if (b.data.back() != 0) // In this program we mark a number as 0 by making the most significant
-    {                       // digit 0. If it is 0 --> no execution
+    if (b.data.back() != 0) // Number marked as zero if most significant digit is 0
+    {                       
         if (!(sum.data.back() < 0) && b.data.back() < 0)    // A + (-B) = A - B
         {
             b.data.back() *= -1;
@@ -93,7 +96,8 @@ void operator + (bigint& sum, bigint& b)  // Overloaded addition. Result stored 
     }
 }
 
-void operator - (bigint& diff, bigint& b)  // Overloaded subtraction. Result stored in diff argument
+// Bigint subtraction
+void operator - (bigint& diff, bigint& b)  
 {
     if (b.data.back() != 0) // No execution if subtracting 0
     {
@@ -135,7 +139,8 @@ void operator - (bigint& diff, bigint& b)  // Overloaded subtraction. Result sto
     }
 }
 
-void bigint::operator ++()  // Overloaded pre-increment.
+// Pre-increment
+void bigint::operator ++()
 {
     if (data.front() != 9)  // If ones digit not 9 --> increment
         ++data.front();
@@ -151,7 +156,8 @@ void bigint::operator ++()  // Overloaded pre-increment.
     }
 }
 
-bigint operator * (const bigint& b, short k)  // General overloaded multiplication
+// Multiply bigint by int
+bigint operator * (const bigint& b, short k) 
 {
     if (k == 0 || b.data.back() == 0)   // If multiplying by 0 --> return 0
         return bigint("0");
@@ -196,7 +202,8 @@ bigint operator * (const bigint& b, short k)  // General overloaded multiplicati
     return product;
 }
 
-bigint operator * (const bigint& b1, const bigint& b2)    // Bigint multiplication, similar principle as above
+// Multiply bigints
+bigint operator * (const bigint& b1, const bigint& b2)   
 {
     if (b1.data.back() == 0 || b2.data.back() == 0)
         return bigint("0");
@@ -244,8 +251,9 @@ bigint operator * (const bigint& b1, const bigint& b2)    // Bigint multiplicati
     return product;
 }
 
-void rule_multiply (bigint& product, const bigint& rule, short k)   // Specialized pass-by-reference multiplication function.
-{                                             // Result stored in product and rule remains unchanged. Similar principle as above
+// Pass-by-reference multiplication
+void rule_multiply (bigint& product, const bigint& rule, short k)   
+{                                             
     if (k == 0) // Multiplication by 0
         product.data.back() = 0;
     else
@@ -307,14 +315,16 @@ void rule_multiply (bigint& product, const bigint& rule, short k)   // Specializ
     }
 }
 
-bool bigint::operator < (const bigint& b) const // < only used for positive comparison in subtraction
+// < only used for positive comparison in subtraction
+bool bigint::operator < (const bigint& b) const
 {
     if (data.size() != b.data.size())
         return data.size() < b.data.size();
     return lexicographical_compare(data.rbegin(), data.rend(), b.data.rbegin(), b.data.rend());
 }
 
-bool bigint::operator > (const bigint& b) const // > only used to compare to a positive number in div loop
+// > only used to compare to a positive number in div loop
+bool bigint::operator > (const bigint& b) const
 {
     if (data.back() <= 0)
         return false;
@@ -323,7 +333,8 @@ bool bigint::operator > (const bigint& b) const // > only used to compare to a p
     return !lexicographical_compare(data.rbegin(), data.rend(), b.data.rbegin(), b.data.rend());
 }
 
-void div (bigint& b1, bigint& b2)   // Div operator
+// Div operator
+void div (bigint& b1, bigint& b2)
 {
     auto end = std::chrono::steady_clock::now(), start = end;
     if (b2.data.size() == 1 && b2.data.back() == 1)
@@ -332,7 +343,7 @@ void div (bigint& b1, bigint& b2)   // Div operator
         cout << "1,";
         cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
     }
-    else if (b2.data.size() == 1 && b2.data.back() != 7 && b2.data.back() != 9)    // Special cases: 2, 3, and 5
+    else if (b2.data.size() == 1 && b2.data.back() != 7 && b2.data.back() != 9) // Special cases: 2, 3, and 5
     {
         if (b2.data.front() == 2)   // div by 2
         {
@@ -422,7 +433,7 @@ void div (bigint& b1, bigint& b2)   // Div operator
             ones = b1.data.front();
             b1.data.pop_front();
             rule_multiply(product, rule, ones); // product = rule * ones
-            arith(b1, product);   // b1 = b1.chopped() + product or b1 = b1.chopped() - product
+            arith(b1, product);   // b1 = (b1/10) + product or b1 = (b1/10) - product
         }
         if (b1.data.back() < 0)
         {
@@ -454,6 +465,7 @@ void div (bigint& b1, bigint& b2)   // Div operator
     }
 }
 
+// Parse comma-separated operands
 void split(const string& s, char c, vector<string>& p)
 {
     string str;
