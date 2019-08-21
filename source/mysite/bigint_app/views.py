@@ -9,20 +9,25 @@ import string
 import os
 import subprocess
 # Create your views here.
-#dir = '/home/ec2-user/desktop/bigint_django/source/mysite/bigint_app/bigint_code'
-dir = '/Users/Jacob/desktop/programming/python/programs/bigint_django/source/mysite/bigint_app/bigint_code'
-a
+
+dir = # INSERT ABSOLUTE PATH TO BIGINT_CODE DIRECTORY #
+
+# Random string generator for naming temp files
 def randstr():
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(6))
 
+# Default index page returns all items in div_rule table with rule_size < 300
 def index(request):
     context = { 'div_rules': div_rule.objects.filter(rule_size__lt=300) }
     return HttpResponse(loader.get_template('bigint_app/index.html').render(context,request))
 
 # Generate random operands and execute div operation
 def div_random(request, dividend_size, divisor_size):
-    if dividend_size.isdigit() == 0 or divisor_size.isdigit() == 0 or int(dividend_size) <= 0 or int(divisor_size) <= 0:
+    if dividend_size.isdigit() == 0 
+    or divisor_size.isdigit() == 0 
+    or int(dividend_size) <= 0 
+    or int(divisor_size) <= 0:
         return HttpResponse('Invalid input')
     os.chdir(dir)
     operands_file = randstr() + '.txt' # Write operands to file
@@ -42,20 +47,19 @@ def div_random(request, dividend_size, divisor_size):
     }
     return JsonResponse(data)
 
-def div_random_ui(request, dividend_size, divisor_size):
-    i = div_random(request, dividend_size, divisor_size)
-    return HttpResponse(i.content)
-
 # Div operation on custom operands
 def div_custom(request, dividend_, divisor_):
-    if dividend_.isdigit() == 0 or divisor_.isdigit() == 0 or (int(divisor_[-1]) % 2 == 0 and divisor_ is not '2') or (divisor_[-1] is '5' and divisor_ is not '5'):
+    if dividend_.isdigit() == 0 
+    or divisor_.isdigit() == 0 
+    or (int(divisor_[-1]) % 2 == 0 and divisor_ is not '2') 
+    or (divisor_[-1] is '5' and divisor_ is not '5'):
         return HttpResponse('Invalid input')
     os.chdir(dir)
     operands_file = randstr() + '.txt'
-    open(operands_file, 'w').write(divisor_ + ',' + dividend_)
+    open(operands_file, 'w').write(divisor_ + ',' + dividend_) # Write operands to temp file
     r = get_or_create_rule(divisor_, operands_file_) # Find or create div rule for divisor
     test = get_or_create_div(dividend_, divisor_, operands_file) # Find or create div result for operands
-    os.system('rm ' + operands_file)
+    os.system('rm ' + operands_file) # Delete temp file
     data = { # Return JSON formatted div results
         'date' : test.date,
         'dividend' : test.dividend,
@@ -72,12 +76,12 @@ def rule_random(request, divisor_size):
     if divisor_size.isdigit() == 0 or int(divisor_size) <= 0:
         return HttpResponse('Invalid input')
     os.chdir(dir)
-    divisor_file = randstr() + '.txt' # Write divisor to file
-    os.system('./generate_operand ' + divisor_size + ' > ' + divisor_file)
+    divisor_file = randstr() + '.txt'
+    os.system('./generate_operand ' + divisor_size + ' > ' + divisor_file) # Write rule to temp file
     divisor_ = open(divisor_file).readlines()[0]
     test = get_or_create_rule(divisor_, divisor_file) # Generate rule for operand
-    os.system('rm ' + divisor_file)
-    data = {
+    os.system('rm ' + divisor_file) # Delete temp file
+    data = { # Return JSON formatted data
         'date' : test.date,
         'divisor' : test.divisor,
         'divisor_size' : test.divisor_size,
@@ -89,14 +93,18 @@ def rule_random(request, divisor_size):
 
 # Generate rule for a custom operand
 def rule_custom(request, divisor_):
-    if divisor_.isdigit() == 0 or int(divisor_) <= 0 or int(divisor_[-1]) % 2 == 0 or divisor_[-1] == '5' or divisor_ == '3' or divisor_ in ['1','2','3','5']:
+    if divisor_.isdigit() == 0 
+    or int(divisor_) <= 0 
+    or int(divisor_[-1]) % 2 == 0 
+    or divisor_[-1] == '5' 
+    or divisor_ in ['1','2','3','5']:
         return HttpResponse('Invalid input')
     os.chdir(dir)
-    divisor_file = randstr() + '.txt' # Write divisor to file
-    open(divisor_file, 'w').write(divisor_)
+    divisor_file = randstr() + '.txt'
+    open(divisor_file, 'w').write(divisor_) # Write divisor to file
     rule_ = get_or_create_rule(divisor_, divisor_file) # Compute rule
-    os.system('rm ' + divisor_file)
-    data = {
+    os.system('rm ' + divisor_file) # Delete temp file
+    data = { # Return JSON formatted data
         'date' : rule_.date,
         'divisor' : rule_.divisor,
         'divisor_size' : rule_.divisor_size,
@@ -111,11 +119,11 @@ def get_or_create_div(dividend_, divisor_, operands_file):
     try:
         div_ = div.objects.get(dividend=dividend_, divisor=divisor_)
     except ObjectDoesNotExist:
-        results = subprocess.Popen(
+        results = subprocess.Popen( # Capture stdout
             ['./div_custom', operands_file],
             stdout=subprocess.PIPE,
             universal_newlines=True).communicate()[0].split(',')
-        div_ = div.objects.create(
+        div_ = div.objects.create( # Insert into div table
             date=timezone.now(),
             dividend=dividend_,
             dividend_size=len(dividend_),
@@ -133,7 +141,7 @@ def get_or_create_rule(divisor_, operands_file):
         try: # Check if exists
             rule_ = div_rule.objects.get(divisor=divisor_)
         except ObjectDoesNotExist: # If does not exist
-            rule = subprocess.Popen(
+            rule = subprocess.Popen( # Capture stdout
                 ['./rule_custom', operands_file],
                 stdout=subprocess.PIPE,
                 universal_newlines=True).communicate()[0]
