@@ -1,7 +1,7 @@
 # Divisibility-Operator-API
 A Django framework with SQLite backend and views returning divisibility data in JSON format to wrap Divisibility Operator C++ code. When the following endpoints are queried, the SQLite database is first searched for existence of relevant operand entries. If the arguments are not found, the computations are carried out.
 
-To execute a div operation on randomly sized operands:
+To execute a div operation on random operands of specified size:
 
     https://(localhost).com/bigint_app/div/random/<dividend_size>/<divisor_size>
 
