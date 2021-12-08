@@ -1,0 +1,13 @@
+version: "3"
+services:
+  py:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: py
+    tty: true
+    command: uvicorn main:app --host 0.0.0.0 --port 80
+    ports:
+      - 80:80
+    expose:
+      - 80
