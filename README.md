@@ -24,7 +24,7 @@ The API suite exposes a couple of useful and/or interesting endpoints for comput
 
 ## REST Endpoints
 ### Uniform Random Number Generator `/generate/{size}`
-Iteratively generates a random number with `size` digits. The digits are uniformly distributed over the interval `[0,...9]`
+Iteratively generates a random number with `size` digits. The digits are uniformly distributed over the interval `[0,...,9]`
 
 #### Example Request
 ```bash
