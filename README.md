@@ -8,14 +8,28 @@ The divisiblity algorithm is the generalization of positive integer divisibility
 
 [Runtime analysis](./Runtimes.pdf)
 
+## Setup
+Clone the repo
+```bash
+cd ~/
+git clone https://github.com/jakemath/divop.io
+```
+Ensure you have `docker` and `docker-compose` installed on your machine. Start the web server:
+```bash
+cd divop.io
+bash run.sh
+```
+
 The API exposes various endpoints related to this computing topic
 
 ## REST Endpoints
 ### Uniform Random Number Generator `/generate/{size}`
 Iteratively generates a random number with `size` digits. The digits are uniformly distributed over the interval `[0,...9]`
 
-#### Example Input
-`GET https://divop.io/generate/11`
+#### Example Request
+```bash
+curl https://divop.io/generate/11
+```
 
 #### Example Output
 ```json
@@ -28,8 +42,10 @@ Iteratively generates a random number with `size` digits. The digits are uniform
 ### Divisibility `/div/{dividend}/{divisor}`
 Executes the divisibility algorithm on the specified `dividend` and `divisor`. Returns `true` if `divisor` divides `dividend`, else `false`
 
-#### Example Input
-`GET https://divop.io/div/111/3`
+#### Example Request
+```bash
+curl https://divop.io/div/111/3
+```
 
 #### Example Output
 ```json
@@ -44,8 +60,10 @@ Executes the divisibility algorithm on randomly generated dividend and divisor o
 
 Returns `true` if the random divisor divides the random dividend, else false.
 
-#### Example Input
-`GET https://divop.io/rand-div/111/3`
+#### Example Request
+```
+curl https://divop.io/rand-div/111/3
+```
 
 #### Example Output
 ```json
@@ -65,7 +83,7 @@ For calculations on gargantuan operands, the WebSocket endpoint may prove useful
 ### Uniform Random Number Generator `/ws/generate/`
 Iteratively generates a random number with `size` digits. The digits are uniformly distributed over the interval `[0,...9]`
 
-#### Example Input
+#### Example Request Payload
 ```json
 {
     "size": 10000
@@ -83,7 +101,7 @@ Iteratively generates a random number with `size` digits. The digits are uniform
 ### Divisibility `/ws/div`
 Executes the divisibility algorithm on the specified `dividend` and `divisor`. Returns `true` if `divisor` divides `dividend`, else `false`
 
-#### Example Input
+#### Example Request Payload
 ```json
 {
     "dividend": "{some giant number}",
@@ -104,7 +122,7 @@ Executes the divisibility algorithm on randomly generated dividend and divisor o
 
 Returns `true` if the random divisor divides the random dividend, else false.
 
-#### Example Input
+#### Example Request Payload
 ```json
 {
     "dividend_size": 1000,
