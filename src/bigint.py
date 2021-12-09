@@ -1,5 +1,8 @@
 #!/usr/local/bin/python
-
+"""
+Author: Jake Mathai
+Purpose: Bigint C++ class wrapper using ctypes
+"""
 import ctypes
 
 lib = ctypes.cdll.LoadLibrary('/src/libbigint.so')

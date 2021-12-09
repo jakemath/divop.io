@@ -1,6 +1,6 @@
 /*
 Author: Jake Mathai
-Purpose: Bigint module file
+Purpose: Bigint implementation file
 */
 
 #include "bigint.h"
@@ -328,12 +328,6 @@ bool div(Bigint& dividend, Bigint& divisor) {
     if (last_digit == 0)  // If 0 --> is divisible
         return true;
     return multiples.find(dividend) != multiples.end(); // If one of the multiples --> is divisible
-}
-
-void Bigint::print() {
-    for (std::list<short>::const_reverse_iterator i = digits.rbegin(); i != digits.rend(); ++i)
-        std::cout << *i;
-    std::cout << std::endl;
 }
 
 std::string Bigint::as_str() const {

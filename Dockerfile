@@ -1,3 +1,5 @@
+# Author: Jake Mathai
+# Purpose: Web container Dockerfile. Load files, compile C++ code and install deps
 FROM python:3.10.0
 WORKDIR /src
 COPY ./src/ /src/

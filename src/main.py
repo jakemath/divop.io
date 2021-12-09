@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 """
 Author: Jake Mathai
-Purpose: API entrypoint
+Purpose: API endpoint implementations
 """
 
 import traceback
@@ -10,10 +10,6 @@ from datetime import date, datetime
 from fastapi import FastAPI, WebSocket
 
 app = FastAPI()
-
-@app.get('/')
-def index():
-    return {'message': 'hi'}
 
 @app.get('/generate/{size}')
 def generate(size):
@@ -29,6 +25,7 @@ def generate(size):
     except:
         response['response'] = traceback.format_exc()
     return response
+
 
 @app.get('/div/{dividend}/{divisor}')
 def div(dividend, divisor):
@@ -70,7 +67,8 @@ def rand_div(dividend_size, divisor_size):
     print(response)
     return response
 
-@app.get('/ws/generate/')
+
+@app.get('/ws/generate')
 async def ws_generate(websocket: WebSocket):
     await websocket.accept()
     while True:

@@ -1,3 +1,5 @@
+# Author: Jake Mathai
+# Purpose: Docker container config
 version: "3"
 services:
   py:
