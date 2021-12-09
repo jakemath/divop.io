@@ -5,6 +5,19 @@ Purpose: Bigint implementation file
 
 #include "bigint.h"
 
+const char* generate_num(unsigned long long size) {
+    std::string num = "";
+    std::default_random_engine engine;
+    engine.seed(std::chrono::system_clock::now().time_since_epoch().count());
+    std::uniform_int_distribution<int> uniform(0, 9);
+    for (unsigned long long i = 1; i <= size; ++i)
+        num += std::to_string(uniform(engine));
+    std::reverse(num.begin(), num.end());
+    while (num[0] == '0')
+        num[0] = std::to_string(uniform(engine))[0];
+    return strdup(num.data());
+}
+
 Bigint::Bigint() {}
 
 Bigint::Bigint(std::string num) {

@@ -40,6 +40,8 @@ class Bigint {
         std::list<short> digits;  // Digits stored in reverse order in list
 };
 
+const char* generate_num(unsigned long long size);
+
 // Hash function - use stringified digits
 struct BigintHash {  
     std::size_t operator()(const Bigint& b) const {
@@ -48,6 +50,9 @@ struct BigintHash {
 };
 
 extern "C" {
+    const char* random_num(unsigned long long size) {
+        return generate_num(size);
+    }
     Bigint* generate(unsigned size, bool randomize) {
         return new Bigint(size, randomize);
     }

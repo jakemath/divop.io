@@ -5,8 +5,8 @@ Purpose: API endpoint implementations
 """
 
 import traceback
-from bigint import Bigint
-from datetime import date, datetime
+from bigint import Bigint, random_num
+from datetime import datetime
 from fastapi import FastAPI, WebSocket
 
 app = FastAPI()
@@ -19,7 +19,7 @@ def generate(size):
         if size <= 0 or size > 1e8:
             raise Exception('Invalid size specified - must be positive but not ridiculously large')
         start = datetime.now()
-        response['response'] = Bigint(size, True).as_str()
+        response['response'] = random_num(size)
         end = datetime.now()
         response['runtime_ms'] = (end - start).microseconds / 1000
     except:
@@ -62,9 +62,9 @@ def rand_div(dividend_size, divisor_size):
         response['result'] = divisor.divides(dividend)
         end = datetime.now()
         response['runtime_ms'] = (end - start).microseconds / 1000
+        print('runtime:', response['runtime_ms'])
     except:
         response['result'] = f'Error: {traceback.format_exc()}'
-    print(response)
     return response
 
 
@@ -78,7 +78,7 @@ async def ws_generate(websocket: WebSocket):
         if size <= 0 or size > 1e8:
             raise Exception('Invalid size specified - must be positive but not ridiculously large')
         start = datetime.now()
-        response['response'] = Bigint(size, True).as_str()
+        response['response'] = random_num(size)
         end = datetime.now()
         response['runtime_ms'] = (end - start).microseconds / 1000
         await websocket.send_json(response)
