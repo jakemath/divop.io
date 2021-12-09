@@ -20,12 +20,13 @@ Bigint::Bigint(const char* num) {
 
 Bigint::Bigint(unsigned long long size, bool randomize) {
     if (randomize) { // Randomized digits
-        std::default_random_engine generator;
+        std::default_random_engine engine;
+        engine.seed(std::chrono::system_clock::now().time_since_epoch().count());
         std::uniform_int_distribution<int> uniform(0, 9);
         for (unsigned long long i = 1; i <= size; ++i)
-            digits.push_back(uniform(generator));
+            digits.push_back(uniform(engine));
         while (digits.back() == 0)
-            digits.back() = uniform(generator);
+            digits.back() = uniform(engine);
     }
     else    // 0-filled
         digits = std::list<short>(size, 0);
@@ -337,15 +338,13 @@ void Bigint::print() {
 
 std::string Bigint::as_str() const {
     std::string digit_string = "";
-    for (std::list<short>::const_iterator i = digits.begin(); i != digits.end(); ++i)
-        digit_string += (char)(*i);
+    for (std::list<short>::const_reverse_iterator i = digits.rbegin(); i != digits.rend(); ++i)
+        digit_string += std::to_string(*i);
     return digit_string;
 }
 
-short* Bigint::as_digits() const {
-    short *digit_array = new short[digits.size()];
-    std::copy(digits.rbegin(), digits.rend(), digit_array);
-    return digit_array;
+const char* Bigint::as_cstr() const { 
+    return strdup(as_str().data());
 }
 
 std::ostream& operator <<(std::ostream& out, const Bigint& b) {  // Outstream overload

@@ -5,8 +5,8 @@ Purpose: API entrypoint
 """
 
 import traceback
-from copy import deepcopy
 from bigint import Bigint
+from datetime import date, datetime
 from fastapi import FastAPI, WebSocket
 
 app = FastAPI()
@@ -20,9 +20,12 @@ def generate(size):
     response = {'response': ''}
     try:
         size = int(size)
-        if size <= 0:
-            raise Exception('Invalid size specified - must be positive')
+        if size <= 0 or size > 1e8:
+            raise Exception('Invalid size specified - must be positive but not ridiculously large')
+        start = datetime.now()
         response['response'] = Bigint(size, True).as_str()
+        end = datetime.now()
+        response['runtime_ms'] = (end - start).microseconds / 1000
     except:
         response['response'] = traceback.format_exc()
     return response
@@ -33,28 +36,54 @@ def div(dividend, divisor):
     try:
         dividend = Bigint(dividend)
         divisor = Bigint(divisor)
+        start = datetime.now()
         response['result'] = divisor.divides(dividend)
+        end = datetime.now()
+        response['runtime_ms'] = (end - start).microseconds / 1000
     except:
         response['result'] = f'Error: {traceback.format_exc()}'
     return response
 
 
-@app.get('/divrandom/{dividend_size}/{divisor_size}')
-def divrandom(dividend_size, divisor_size):
+@app.get('/rand-div/{dividend_size}/{divisor_size}')
+def rand_div(dividend_size, divisor_size):
     response = {'result': ''}
     try:
         dividend_size = int(dividend_size)
         divisor_size = int(divisor_size)
         if dividend_size < divisor_size:
             raise Exception('Dividend size must be >= divisor size')
+        if dividend_size > 1e8 or divisor_size > 1e8:
+            raise Exception('Ridiculous size requested, no thanks')
         dividend = Bigint(dividend_size, True)
         divisor = Bigint(divisor_size, True)
-        response['dividend'] = deepcopy(dividend.as_str())
-        response['divisor'] = deepcopy(divisor.as_str())
+        response['dividend'] = dividend.as_str()
+        response['divisor'] = divisor.as_str()
+        response['dividend_size'] = dividend.size()
+        response['divisor_size'] = divisor.size()
+        start = datetime.now()
         response['result'] = divisor.divides(dividend)
+        end = datetime.now()
+        response['runtime_ms'] = (end - start).microseconds / 1000
     except:
         response['result'] = f'Error: {traceback.format_exc()}'
+    print(response)
     return response
+
+@app.get('/ws/generate/')
+async def ws_generate(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_json()
+        response = {'response': ''}
+        size = int(data['size'])
+        if size <= 0 or size > 1e8:
+            raise Exception('Invalid size specified - must be positive but not ridiculously large')
+        start = datetime.now()
+        response['response'] = Bigint(size, True).as_str()
+        end = datetime.now()
+        response['runtime_ms'] = (end - start).microseconds / 1000
+        await websocket.send_json(response)
 
 
 @app.websocket('/ws/div')
@@ -62,9 +91,36 @@ async def ws_div(websocket: WebSocket):
     await websocket.accept()
     while True:
         data = await websocket.receive_json()
-        request_id = data['request_id']
-        response = {'request_id': request_id}
+        response = {'response': ''}
         dividend = Bigint(data['dividend'])
         divisor = Bigint(data['divisor'])
+        start = datetime.now()
         response['result'] = divisor.divides(dividend)
+        end = datetime.now()
+        response['runtime_ms'] = (end - start).microseconds / 1000
+        await websocket.send_json(response)
+
+
+@app.websocket('/ws/rand-div')
+async def ws_rand_div(websocket: WebSocket):
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_json()
+        response = {'response': ''}
+        dividend_size = int(data['dividend_size'])
+        divisor_size = int(data['divisor_size'])
+        if dividend_size < divisor_size:
+            raise Exception('Dividend size must be >= divisor size')
+        if dividend_size > 1e8 or divisor_size > 1e8:
+            raise Exception('Ridiculous size requested, no thanks')
+        dividend = Bigint(dividend_size, True)
+        divisor = Bigint(divisor_size, True)
+        response['dividend'] = dividend.as_str()
+        response['divisor'] = divisor.as_str()
+        response['dividend_size'] = dividend.size()
+        response['divisor_size'] = divisor.size()
+        start = datetime.now()
+        response['result'] = divisor.divides(dividend)
+        end = datetime.now()
+        response['runtime_ms'] = (end - start).microseconds / 1000
         await websocket.send_json(response)

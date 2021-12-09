@@ -1,22 +1,125 @@
-# Divisibility-Operator-API
-A Django framework with SQLite backend and views returning divisibility data in JSON format to wrap Divisibility Operator C++ code. When the following endpoints are queried, the SQLite database is first searched for existence of relevant operand entries. If the arguments are not found, the computations are carried out.
+# divop.io
 
-To execute a div operation on random operands of specified size:
+A public web REST/WebSocket API suite based on the Python FastAPI framework for computing divisibility of arbitrarily large numbers. 
 
-    https://<host>.com/bigint_app/div/random/<dividend_size>/<divisor_size>
+Uses a C++ implementation of the general divisiblity criteria with capacity to compute on ridiculously large numbers containing 1M+ digits. 
 
-To execute a div operation on custom operands:
+The divisiblity algorithm is the generalization of positive integer divisibility rules to all prime numbers and has a runtime complexity of `O(nm)`, where `n` is the digits in the dividend and `m` is the digits in the divisor.
 
-    https://<host>.com/bigint_app/div/custom/<dividend>/<divisor>
+[Runtime analysis](./Runtimes.pdf)
 
-Div operation results are returned in JSON format with the dividend, divisor, operand sizes, runtime in milliseconds, and return value.
+The API exposes various endpoints related to this computing topic
 
-To compute the rule for a randomly sized and valid divisor:
+## REST Endpoints
+### Uniform Random Number Generator `/generate/{size}`
+Iteratively generates a random number with `size` digits. The digits are uniformly distributed over the interval `[0,...9]`
 
-    https://<host>.com/bigint_app/rule/random/<divisor_size>
-    
-To compute the rule for a custom divisor:
+#### Example Input
+`GET https://divop.io/generate/11`
 
-    https://<host>.com/bigint_app/rule/custom/<divisor>
-    
-Rule computation results are also returned in JSON format with the divisor and divisor size, rule and rule size, and whether the rule is negative or not.
+#### Example Output
+```json
+{
+    "response": "12312412412",
+    "runtime_ms": 0.01
+}
+```
+
+### Divisibility `/div/{dividend}/{divisor}`
+Executes the divisibility algorithm on the specified `dividend` and `divisor`. Returns `true` if `divisor` divides `dividend`, else `false`
+
+#### Example Input
+`GET https://divop.io/div/111/3`
+
+#### Example Output
+```json
+{
+    "result": true,
+    "runtime_ms": 0.01
+}
+```
+
+### Random Divisiblity `/rand-div/{dividend_size}/{divisor_size}`
+Executes the divisibility algorithm on randomly generated dividend and divisor operands of size `dividend_size` and `divisor_size` digits, respectively. Numbers are generated according to the same procedure as the random number generator endpoint. 
+
+Returns `true` if the random divisor divides the random dividend, else false.
+
+#### Example Input
+`GET https://divop.io/rand-div/111/3`
+
+#### Example Output
+```json
+{
+    "result": true,
+    "dividend": "{some 111 digit number}",
+    "divisor": "{some 3 digit number}",
+    "dividend_size": 111,
+    "divisor_size": 3,
+    "runtime_ms": 0.01
+}
+```
+
+## WebSocket Endpoints
+For calculations on gargantuan operands, the WebSocket endpoint may prove useful in avoiding request timeouts. This is best suited for calculations involving numbers containing 1M+ digits, but please don't test higher than that. 
+
+### Uniform Random Number Generator `/ws/generate/`
+Iteratively generates a random number with `size` digits. The digits are uniformly distributed over the interval `[0,...9]`
+
+#### Example Input
+```json
+{
+    "size": 10000
+}
+```
+
+#### Example Output
+```json
+{
+    "response": "{some 10000 digit number}",
+    "runtime_ms": 0.01
+}
+```
+
+### Divisibility `/ws/div`
+Executes the divisibility algorithm on the specified `dividend` and `divisor`. Returns `true` if `divisor` divides `dividend`, else `false`
+
+#### Example Input
+```json
+{
+    "dividend": "{some giant number}",
+    "divisor": "{some giant number}"
+}
+```
+
+#### Example Output
+```json
+{
+    "response": true,
+    "runtime_ms": 0.01
+}
+```
+
+### Random Divisiblity `/ws/rand-div`
+Executes the divisibility algorithm on randomly generated dividend and divisor operands of size `dividend_size` and `divisor_size` digits, respectively. Numbers are generated according to the same procedure as the random number generator endpoint. 
+
+Returns `true` if the random divisor divides the random dividend, else false.
+
+#### Example Input
+```json
+{
+    "dividend_size": 1000,
+    "divisor_size": 3
+}
+```
+
+#### Example Output
+```json
+{
+    "result": true,
+    "dividend": "{some 1000 digit number}",
+    "divisor": "{some 3 digit number}",
+    "dividend_size": 1000,
+    "divisor_size": 3,
+    "runtime_ms": 0.01
+}
+```

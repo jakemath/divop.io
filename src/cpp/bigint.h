@@ -7,10 +7,10 @@ Purpose: Bigint header file
 #define BIGINT_H
 
 #include <iostream>
-#include <new> //For std::nothrow
-
 #include <list>
+#include <chrono> 
 #include <string>
+#include <string.h>
 #include <random>
 #include <numeric>
 #include <iterator>
@@ -30,7 +30,7 @@ class Bigint {
         void operator = (const Bigint& b) { digits = b.digits; }    // Assignment operator
         void print();
         std::string as_str() const;
-        short* as_digits() const;
+        const char* as_cstr() const;
         friend void operator + (Bigint& sum, Bigint& b);    // Addition
         friend void operator - (Bigint& result, Bigint& b);   // Subtraction
         friend Bigint operator * (const Bigint& b, short k); // Scalar multiplication
@@ -54,11 +54,11 @@ extern "C" {
     Bigint* from_str(const char* num) {
         return new Bigint(num);
     }
-    void print(Bigint* num) {
-        num -> print();
+    unsigned long long size(Bigint* num) {
+        return num -> digits.size();
     }
-    short* as_digits(Bigint* num) {
-        return num -> as_digits();
+    const char* as_cstr(Bigint* num) {
+        return num -> as_cstr();
     }
     bool divides(Bigint* dividend, Bigint* divisor) { 
         return div(*dividend, *divisor); 
