@@ -28,7 +28,7 @@ Iteratively generates a random number with `size` digits. The digits are uniform
 
 #### Example Request
 ```bash
-curl https://divop.io/generate/11
+curl http://divop.io/generate/11
 ```
 
 #### Example Output
@@ -44,7 +44,7 @@ Executes the divisibility algorithm on the specified `dividend` and `divisor`. R
 
 #### Example Request
 ```bash
-curl https://divop.io/div/111/3
+curl http://divop.io/div/111/3
 ```
 
 #### Example Output
@@ -62,7 +62,7 @@ Returns `true` if the random divisor divides the random dividend, else false.
 
 #### Example Request
 ```
-curl https://divop.io/rand-div/111/3
+curl http://divop.io/rand-div/111/3
 ```
 
 #### Example Output
