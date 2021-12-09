@@ -20,7 +20,7 @@ cd divop.io
 bash run.sh
 ```
 
-The API exposes various endpoints related to this computing topic
+The API suite exposes a couple of useful and/or interesting endpoints for computing.
 
 ## REST Endpoints
 ### Uniform Random Number Generator `/generate/{size}`
