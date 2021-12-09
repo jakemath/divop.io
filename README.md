@@ -1,6 +1,8 @@
 # divop.io
 
-Fast REST/WebSocket API suite built on the Python FastAPI framework for computing divisibility on arbitrarily large numbers.
+Have you ever needed to divide million-digit integers, but didn't have the time nor the paper required to do it? Well, you're in luck!
+
+divop.io is a fast REST/WebSocket API suite built on the Python FastAPI framework for computing divisibility on arbitrarily large numbers.
 
 Uses a C++ implementation of the general divisiblity criteria with capacity to compute on ridiculously large numbers containing 1M+ digits. 
 
