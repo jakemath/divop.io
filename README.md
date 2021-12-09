@@ -80,7 +80,7 @@ curl https://divop.io/rand-div/111/3
 ## WebSocket Endpoints
 For calculations on gargantuan operands, the WebSocket endpoint may prove useful in avoiding request timeouts. This is best suited for calculations involving numbers containing 1M+ digits, but please don't test higher than that. 
 
-### Uniform Random Number Generator `/ws/generate/`
+### Uniform Random Number Generator `/ws/generate`
 Iteratively generates a random number with `size` digits. The digits are uniformly distributed over the interval `[0,...9]`
 
 #### Example Request Payload
