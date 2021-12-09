@@ -4,7 +4,7 @@ A fast REST/WebSocket API suite based on the Python FastAPI framework for comput
 
 Uses a C++ implementation of the general divisiblity criteria with capacity to compute on ridiculously large numbers containing 1M+ digits. 
 
-The divisiblity algorithm is the generalization of positive integer divisibility rules to all prime numbers and has a runtime complexity of `O(nm)`, where `n` is the digits in the dividend and `m` is the digits in the divisor.
+The divisiblity algorithm leverages the generalization of integer divisibility rules for all prime numbers. This algorithm has a runtime complexity of `O(nm)`, where `n` is the digits in the dividend and `m` is the digits in the divisor.
 
 [Runtime analysis](./Runtimes.pdf)
 
