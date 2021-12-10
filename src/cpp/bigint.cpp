@@ -2,21 +2,7 @@
 Author: Jake Mathai
 Purpose: Bigint implementation file
 */
-
 #include "bigint.h"
-
-const char* generate_num(unsigned long long size) {
-    std::string num = "";
-    std::default_random_engine engine;
-    engine.seed(std::chrono::system_clock::now().time_since_epoch().count());
-    std::uniform_int_distribution<int> uniform(0, 9);
-    for (unsigned long long i = 1; i <= size; ++i)
-        num += std::to_string(uniform(engine));
-    std::reverse(num.begin(), num.end());
-    while (num[0] == '0')
-        num[0] = std::to_string(uniform(engine))[0];
-    return strdup(num.data());
-}
 
 Bigint::Bigint() {}
 
@@ -31,7 +17,7 @@ Bigint::Bigint(const char* num) {
         digits.push_back(num_as_string[num_as_string.length() - 1 - i] - '0');
 }
 
-Bigint::Bigint(unsigned long long size, bool randomize) {
+Bigint::Bigint(unsigned long long size, bool randomize, bool is_divisor=false) {
     if (randomize) { // Randomized digits
         std::default_random_engine engine;
         engine.seed(std::chrono::system_clock::now().time_since_epoch().count());
@@ -40,6 +26,19 @@ Bigint::Bigint(unsigned long long size, bool randomize) {
             digits.push_back(uniform(engine));
         while (digits.back() == 0)
             digits.back() = uniform(engine);
+        if (is_divisor) {
+            short valid_ones_digits[4] = {1, 3, 7, 9};
+            short exception_digit = 5;
+            if (digits.size() == 1) {
+                valid_ones_digits[0] = 5;
+                exception_digit = 1;
+            }
+            short ones_digit = digits.front();
+            while (ones_digit % 2 == 0 || ones_digit == exception_digit) {
+                digits.front() = valid_ones_digits[uniform(engine) % 4];
+                ones_digit = digits.front();
+            }
+        }
     }
     else    // 0-filled
         digits = std::list<short>(size, 0);

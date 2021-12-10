@@ -21,7 +21,7 @@ class Bigint {
         Bigint();
         Bigint(std::string num);
         Bigint(const char* num);
-        Bigint(unsigned long long size, bool randomize);
+        Bigint(unsigned long long size, bool randomize, bool is_divisor=false);
         friend std::ostream& operator << (std::ostream& out, const Bigint& b);  // Outstream overload
         void operator ++(); // Pre-increment operator
         bool operator < (const Bigint& b) const;  // Optimized comparison operators
@@ -51,20 +51,34 @@ struct BigintHash {
 
 extern "C" {
     const char* random_num(unsigned long long size) {
-        return generate_num(size);
+        std::string num = "";
+        std::default_random_engine engine;
+        engine.seed(std::chrono::system_clock::now().time_since_epoch().count());
+        std::uniform_int_distribution<int> uniform(0, 9);
+        for (unsigned long long i = 1; i <= size; ++i)
+            num += std::to_string(uniform(engine));
+        std::reverse(num.begin(), num.end());
+        while (num[0] == '0')
+            num[0] = std::to_string(uniform(engine))[0];
+        return strdup(num.data());
     }
-    Bigint* generate(unsigned size, bool randomize) {
-        return new Bigint(size, randomize);
+
+    Bigint* generate(unsigned size, bool randomize, bool is_divisor=false) {
+        return new Bigint(size, randomize, is_divisor);
     }
+
     Bigint* from_str(const char* num) {
         return new Bigint(num);
     }
+
     unsigned long long size(Bigint* num) {
         return num -> digits.size();
     }
+
     const char* as_cstr(Bigint* num) {
         return num -> as_cstr();
     }
+
     bool divides(Bigint* dividend, Bigint* divisor) { 
         return div(*dividend, *divisor); 
     }
