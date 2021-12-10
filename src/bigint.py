@@ -24,11 +24,11 @@ def random_num(size):
     return lib.random_num(size).decode('utf-8')
 
 class Bigint(object):
-    def __init__(self, size_or_digits, randomize=False):
+    def __init__(self, size_or_digits, randomize=False, is_divisor=False):
         if type(size_or_digits) is str:
             self.obj = lib.from_str(size_or_digits.encode('utf-8'))
         else:
-            self.obj = lib.generate(size_or_digits, randomize)
+            self.obj = lib.generate(size_or_digits, randomize, is_divisor)
 
     def size(self):
         return lib.size(self.obj)

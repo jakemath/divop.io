@@ -53,7 +53,7 @@ def rand_div(dividend_size, divisor_size):
         if dividend_size > 1e8 or divisor_size > 1e8:
             raise Exception('Ridiculous size requested, no thanks')
         dividend = Bigint(dividend_size, True)
-        divisor = Bigint(divisor_size, True)
+        divisor = Bigint(divisor_size, True, True)
         response['dividend'] = dividend.as_str()
         response['divisor'] = divisor.as_str()
         response['dividend_size'] = dividend.size()
@@ -112,7 +112,7 @@ async def ws_rand_div(websocket: WebSocket):
         if dividend_size > 1e8 or divisor_size > 1e8:
             raise Exception('Ridiculous size requested, no thanks')
         dividend = Bigint(dividend_size, True)
-        divisor = Bigint(divisor_size, True)
+        divisor = Bigint(divisor_size, True, True)
         response['dividend'] = dividend.as_str()
         response['divisor'] = divisor.as_str()
         response['dividend_size'] = dividend.size()
