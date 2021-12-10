@@ -282,14 +282,17 @@ bool Bigint::operator > (const Bigint& b) const {
 // Div operator. Iteratively reduce A to a small enough number to compute
 // divisibility. divisor divides dividend_{i} <--> divisor divides dividend_{i+1}
 bool div(Bigint& dividend, Bigint& divisor) {
-    if (divisor.digits.size() == 1 && divisor.digits.back() != 7 && divisor.digits.back() != 9) {   // Special cases: 2, 3, and 5
-        if (divisor.digits.front() == 2)  // Div by 2
+    unsigned long long divisor_size = divisor.digits.size();
+    short divisor_ones_digit = divisor.digits.front();
+    if (divisor_size == 1 && divisor_ones_digit != 7 && divisor_ones_digit != 9) {   // Special cases: 2, 3, and 5
+        if (divisor_ones_digit == 2)  // Div by 2
             return dividend.digits.front() % 2 == 0;
-        if (divisor.digits.front() == 3)  // Div by 3
+        if (divisor_ones_digit == 3)  // Div by 3
             return std::accumulate(dividend.digits.begin(), dividend.digits.end(), 0) % 3 == 0;
-        return dividend.digits.front() == 0 || dividend.digits.front() == 5;   // div by 5
+        return dividend.digits.front() % 5 == 0;   // div by 5
     }
-    if (dividend.digits.size() == divisor.digits.size()) {
+    unsigned long long dividend_size = dividend.digits.size();
+    if (dividend_size == divisor_size) {
         if (dividend == divisor)
             return true;
         if (dividend > divisor) {
@@ -300,16 +303,19 @@ bool div(Bigint& dividend, Bigint& divisor) {
         }
         return false;
     }
-    if (dividend.digits.size() < divisor.digits.size())
+    if (dividend_size < divisor_size)
         return false;
     Bigint rule, threshold = divisor;
     threshold.digits.push_front(0);
     std::unordered_set<Bigint, BigintHash> multiples;
     multiples.insert(divisor);
     multiples.insert(threshold);
-    for (short factor = 2; factor <= 9; ++factor)
+    multiples.insert(divisor*2);
+    Bigint tripled_divisor = divisor*3;
+    multiples.insert(tripled_divisor);
+    for (short factor = 4; factor <= 9; ++factor)
         multiples.insert(divisor*factor);
-    rule = (divisor.digits.front() == 1 || divisor.digits.front() == 9) ? divisor : divisor*3;
+    rule = (divisor_ones_digit == 1 || divisor_ones_digit == 9) ? divisor : tripled_divisor;
     if (rule.digits.front() == 1) {
         rule.digits.pop_front();
         rule.digits.back() *= -1;
@@ -327,11 +333,11 @@ bool div(Bigint& dividend, Bigint& divisor) {
     else 
         arithmetic_operation = operator +;
     Bigint product(rule.digits.size(), 0);
-    short ones;
-    while (dividend > threshold) { // Iterate until within bounds of the set
-        ones = dividend.digits.front();
+    short ones_digit;
+    for (; dividend > threshold;) { // Iterate until within bounds of the set
+        ones_digit = dividend.digits.front();
         dividend.digits.pop_front();
-        multiply_by_reference(product, rule, ones); // product = rule * ones
+        multiply_by_reference(product, rule, ones_digit); // product = rule * ones
         arithmetic_operation(dividend, product);   // dividend = dividend/10 + product
     }
     short last_digit = dividend.digits.back();
@@ -345,7 +351,7 @@ bool div(Bigint& dividend, Bigint& divisor) {
 std::string Bigint::as_str() const {
     std::string digit_string = "";
     for (std::list<short>::const_reverse_iterator i = digits.rbegin(); i != digits.rend(); ++i)
-        digit_string += std::to_string(*i);
+        digit_string.push_back('0' + *i);
     return digit_string;
 }
 

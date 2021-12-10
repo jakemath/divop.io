@@ -56,10 +56,10 @@ extern "C" {
         engine.seed(std::chrono::system_clock::now().time_since_epoch().count());
         std::uniform_int_distribution<int> uniform(0, 9);
         for (unsigned long long i = 1; i <= size; ++i)
-            num += std::to_string(uniform(engine));
+            num.push_back('0' + uniform(engine));
         std::reverse(num.begin(), num.end());
         while (num[0] == '0')
-            num[0] = std::to_string(uniform(engine))[0];
+            num[0] = '0' + uniform(engine);
         return strdup(num.data());
     }
 
