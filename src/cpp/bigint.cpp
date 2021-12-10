@@ -17,7 +17,7 @@ Bigint::Bigint(const char* num) {
         digits.push_back(num_as_string[num_as_string.length() - 1 - i] - '0');
 }
 
-Bigint::Bigint(unsigned long long size, bool randomize, bool is_divisor=false) {
+Bigint::Bigint(unsigned long long size, bool randomize, bool is_divisor /*=false*/) {
     if (randomize) { // Randomized digits
         std::default_random_engine engine;
         engine.seed(std::chrono::system_clock::now().time_since_epoch().count());
