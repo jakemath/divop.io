@@ -1,13 +1,14 @@
 #!/usr/local/bin/python
 """
 Author: Jake Mathai
-Purpose: API endpoint implementations
+Purpose: API endpoints
 """
 
 import traceback
-from bigint import Bigint, random_num
 from datetime import datetime
 from fastapi import FastAPI, WebSocket
+
+from .bigint import Bigint, random_num
 
 app = FastAPI()
 

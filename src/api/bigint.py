@@ -1,7 +1,7 @@
 #!/usr/local/bin/python
 """
 Author: Jake Mathai
-Purpose: Bigint C++ class wrapper using ctypes
+Purpose: ctypes Bigint class wrapper
 """
 import ctypes
 
@@ -24,6 +24,7 @@ def random_num(size):
     return lib.random_num(size).decode('utf-8')
 
 class Bigint(object):
+
     def __init__(self, size_or_digits, randomize=False, is_divisor=False):
         if type(size_or_digits) is str:
             self.obj = lib.from_str(size_or_digits.encode('utf-8'))
