@@ -83,7 +83,6 @@ async def ws_generate(websocket: WebSocket):
             response['result'] = random_num(size)
             end = datetime.now()
             response['runtime_ms'] = (end - start).microseconds / 1000
-            await websocket.send_json(response)
         except Exception as e:
             response['result'] = f'failed: {e}'
         await websocket.send_json(response)
@@ -102,7 +101,6 @@ async def ws_div(websocket: WebSocket):
             response['result'] = divisor.divides(dividend)
             end = datetime.now()
             response['runtime_ms'] = (end - start).microseconds / 1000
-            await websocket.send_json(response)
         except Exception as e:
             response['result'] = f'failed: {e}'
         await websocket.send_json(response)
@@ -131,7 +129,6 @@ async def ws_rand_div(websocket: WebSocket):
             response['result'] = divisor.divides(dividend)
             end = datetime.now()
             response['runtime_ms'] = (end - start).microseconds / 1000
-            await websocket.send_json(response)
         except Exception as e:
             response['result'] = f'failed: {e}'
         await websocket.send_json(response)
