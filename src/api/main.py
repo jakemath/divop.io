@@ -69,7 +69,7 @@ def rand_div(dividend_size, divisor_size):
     return response
 
 
-@app.get('/ws/generate')
+@app.websocket('/ws/generate')
 async def ws_generate(websocket: WebSocket):
     await websocket.accept()
     while True:
